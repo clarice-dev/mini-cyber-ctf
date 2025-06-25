@@ -1,0 +1,111 @@
+<!-- Caesar Cipher - A substitution cipher where each letter is shifted by a certain number. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1 - Caesar Cipher</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Level 1: Caesar Cipher</h1>
+        <p>Decode the message below. It is encrypted with a caesar cipher using a secret shift.</p>
+
+         <div class="puzzle">
+            <strong>Encrypted Message:</strong>
+            <p id="cipherText">LIPPS XLIVI</p>
+
+            <input type="number" id="shiftInput" placeholder="Enter shift (e.g. 2)">
+            <button onclick="decode()">Decode</button>
+
+            <p><strong>Decoded Message:</strong> <span id="decodedText"></span></p>
+         </div>
+         
+        <!-- Check Answer button + result display -->
+        <button onclick="checkAnswer()">Check Answer</button>
+        <p id="checkResult" style="font-weight: bold; margin-top: 10px;"></p>
+
+        <!-- Success and fail audio -->
+        <audio id="successSound" src="../Assets/Sounds/success-fanfare-trumpets.mp3"></audio>
+        <audio id="failSound" src="../Assets/Sounds/wrong-answer.wav"></audio>
+
+        <!-- Next Level button (hidden by default) -->
+        <button id="nextLevelBtn" onclick="goToNextLevel()" style="display: none;">Next Level</button>
+    </div>
+
+         <a href="../index.html">Back to Main Menu</a>
+    </div>
+    
+  <script>
+    function decode()
+    //starts a decode function when a user clicks the decode button
+    {
+        const cipher = "LIPPS XLIVI";  //Stores the encrypted message as a string using Caesar Cipher with a shift of 7.
+        const shift = parseInt(document.getElementById("shiftInput").value);
+        let decoded = "";
+
+        for (let i = 0; i < cipher.length; i++) {
+            const char = cipher[i];
+
+            if (char >= 'A' && char <= 'Z'){
+              // Handle uppercase letters
+                const code = ((char.charCodeAt(0) - 65 - shift + 26) % 26) + 65;
+                decoded += String.fromCharCode(code);
+            } else if (char >= 'a' && char <= 'z') {
+              // Handle lowercase letters
+             const code = ((char.charCodeAt(0) - 97 - shift + 26) % 26) + 97;
+             decoded += String.fromCharCode(code);
+            } else {
+              // Non-letter characters stay the same
+               decoded += char;
+             }
+        }
+
+        document.getElementById("decodedText").textContent = decoded;
+    }
+
+    // Check if the decoded text matches the expected answer
+    function checkAnswer() {
+        // The correct expected decoded message (fully capitalized)
+        const correct = "HELLO THERE";
+        // Get the user's decoded output and normalize it
+        const userAnswer = document.getElementById("decodedText").textContent.trim().toUpperCase();
+        const resultDisplay = document.getElementById("checkResult");
+        const successSound = document.getElementById("successSound");
+        const failSound = document.getElementById("failSound");
+        const nextBtn = document.getElementById("nextLevelBtn");
+
+        // Compare normalized strings
+        if (userAnswer === correct) {
+            resultDisplay.textContent = "✅ Correct!";
+            resultDisplay.style.color = "lightgreen";
+            successSound.play();
+
+            // Trigger confetti 🎉
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 }
+            });
+
+            // Show the next level button
+            nextBtn.style.display = "inline-block";
+        } else {
+            resultDisplay.textContent = "❌ Try again.";
+            resultDisplay.style.color = "red";
+            failSound.play();
+            nextBtn.style.display = "none";
+        }
+    }
+
+    // Redirect to the next level (placeholder)
+    function goToNextLevel() {
+        window.location.href = "level2.html";
+    }
+  </script>
+ 
+
+</body>
+</html>
