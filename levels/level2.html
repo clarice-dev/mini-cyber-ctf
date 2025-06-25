@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 2 - MD5 Hash Cracking</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+</head>
+<body>
+
+    <div class="container">
+        <h1>Level 2: MD5 Hash Cracking</h1>
+        <p>Your mission: Find the original string that generated the following MD5 hash:</p>
+
+        <div class="puzzle">
+            <strong>Hash:</strong>
+            <p id="targetHash">96b33694c4bb7dbd07391e0be54745fb</p> <!-- hash of 'You are on fire' -->
+
+            <input type="text" id="userInput" placeholder="Enter your Guess">
+            <button onclick="checkHash()">Check</button>
+
+            <p id="feedback"></p>
+            <button id="nextLevelBtn" onclick="goToNextLevel()" style="display:none;">Next Level</button>
+
+            <!-- Hint Section -->
+          <div style="margin-top: 20px;">
+             <button onclick="toggleHint()">Show Hint</button>
+             <p id="hintText" style="display: none; color: #999;">🧠 It's a common but weak password — think of what lazy users might type after "password".</p>
+        </div>
+
+            <!-- Success and fail audio -->
+            <audio id="successSound" src="../Assets/Sounds/success-fanfare-trumpets.mp3"></audio>
+            <audio id="failSound" src="../Assets/Sounds/wrong-answer.wav"></audio>
+        </div>
+
+        <a href="../index.html">Back to Main Menu</a>
+    </div>
+
+    <script>
+    function checkHash() {
+      const userInput = document.getElementById("userInput").value.trim();
+      const hashedInput = CryptoJS.MD5(userInput).toString();
+      const targetHash = document.getElementById("targetHash").textContent.trim();
+      const feedback = document.getElementById("feedback");
+
+      if (hashedInput === targetHash) {
+        feedback.textContent = "✅ Correct! You cracked the hash.";
+        feedback.style.color = "lightgreen";
+        document.getElementById("successSound").play();
+        document.getElementById("nextLevelBtn").style.display = "inline-block";
+      } else {
+        feedback.textContent = "❌ Wrong guess. Try again.";
+        feedback.style.color = "red";
+        document.getElementById("failSound").play();
+        document.getElementById("nextLevelBtn").style.display = "none";
+      }
+    }
+
+    function toggleHint() {
+      const hint = document.getElementById("hintText");
+      hint.style.display = hint.style.display === "none" ? "block" : "none";
+    }
+
+    function goToNextLevel() {
+      window.location.href = "level3.html";
+    }
+  </script>
+</body>
+</html>
