@@ -3,77 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level 3 - Brute Force Password Crack</title>
+    <title>Level 3 - SQL Injection</title>
     <link rel="stylesheet" href="../style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <style>
+    input[type="text"],
+    input[type="password"] {
+      padding: 10px;
+      margin: 10px 0;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background-color: #2a2a2a;
+      color: #fff;
+    }
+  </style>
+
 </head>
 <body>
-
     <div class="container">
-        <h1>Level 3: Brute Force Password Crack</h1>
-        <p>We have a hashed password. Your mission is to figure out which word from the word list matches it.</p>
+    <h1>Level 3: SQL Injection</h1>
+    <p>Your goal: Try to bypass the login form using SQL injection.</p>
 
-        <div class="puzzle">
-            <strong>Hash:</strong>
-            <p id="targetHash">ea9032b76f1e061c5823c7ecb6e61f50</p> <!-- Correct MD5 of "hey" -->
+    <div class="puzzle">
+      <label for="username">Username:</label>
+      <input type="text" id="username" placeholder="Enter username">
 
-            <button onclick="toggleWordlist()">Show Wordlist</button>
-            <p id="wordlistText" style="display:none; color: #aaa;">Wordlist: Qwerty1, P@ssw0rd, Indya123, secret, bye, admin, hey</p>
+      <br>
 
-            <button onclick="startBruteForce()">Start Cracking</button>
-            <p><strong>Status:</strong> <span id="statusText">Waiting...</span></p>
-            <p><strong>Matched Password:</strong> <span id="result"></span></p>
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Enter password">
 
-            <audio id="successSound" src="../Assets/Sounds/success-fanfare-trumpets.mp3"></audio>
-            <audio id="failSound" src="../Assets/Sounds/wrong-answer.wav"></audio>
+       <br>
 
-            <p id="feedback"></p>
-            <button id="nextLevelBtn" onclick="goToNextLevel()" style="display: none;">Next Level</button>
-        </div>
+      <button onclick="loginCheck()">Login</button>
 
-        <a href="../index.html">Back to Main Menu</a>
+      <p id="loginStatus"></p>
+      <button id="nextLevelBtn" onclick="goToNextLevel()" style="display:none;">Next Level</button>
+
+      <!-- Sounds -->
+      <audio id="successSound" src="../Assets/Sounds/success-fanfare-trumpets.mp3"></audio>
+      <audio id="failSound" src="../Assets/Sounds/wrong-answer.wav"></audio>
+
+      <!-- Hint -->
+      <div style="margin-top: 20px;">
+        <button onclick="toggleHint()">Show Hint</button>
+        <p id="hintText" style="display: none; color: #ccc;">
+          💡 Try using a common SQL trick like: <code class="hint-code">' OR '1'='1</code>
+        </p>
+      </div>
     </div>
 
- <script>
-    const wordlist = ["Qwerty1", "P@ssw0rd", "Indya123", "secret", "bye", "admin", "hey"];
+    <a href="../index.html">Back to Main Menu</a>
+  </div>
 
-    function toggleWordlist() {
-      const wordlistText = document.getElementById("wordlistText");
-      wordlistText.style.display = wordlistText.style.display === "none" ? "block" : "none";
+  <script>
+    function loginCheck() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const status = document.getElementById("loginStatus");
+
+      // Simulate simple login validation
+      if ((username === "admin" && password === "admin123") ||
+          (username.includes("' OR") || password.includes("' OR"))) {
+
+        status.textContent = "✅ Access Granted! You successfully bypassed the login.";
+        status.style.color = "lightgreen";
+        document.getElementById("successSound").play();
+        document.getElementById("nextLevelBtn").style.display = "inline-block";
+
+      } else {
+        status.textContent = "❌ Login failed. Try again.";
+        status.style.color = "red";
+        document.getElementById("failSound").play();
+      }
     }
 
-    function startBruteForce() {
-      const targetHash = document.getElementById("targetHash").textContent.trim().toLowerCase();
-      let index = 0;
-      document.getElementById("statusText").textContent = "Starting...";
-
-      const interval = setInterval(() => {
-        if (index < wordlist.length) {
-          const guess = wordlist[index];
-          const guessHash = CryptoJS.MD5(guess.trim()).toString().toLowerCase();
-          document.getElementById("statusText").textContent = `Trying: ${guess}`;
-
-          if (guessHash === targetHash) {
-            document.getElementById("statusText").textContent = "✅ Match Found!";
-            document.getElementById("result").textContent = guess;
-            document.getElementById("successSound").play();
-            document.getElementById("nextLevelBtn").style.display = "inline-block";
-            clearInterval(interval);
-          } else {
-            index++;
-          }
-        } else {
-          document.getElementById("statusText").textContent = "❌ No match found.";
-          document.getElementById("failSound").play();
-          clearInterval(interval);
-        }
-      }, 1000);
+    function toggleHint() {
+      const hint = document.getElementById("hintText");
+      hint.style.display = hint.style.display === "none" ? "block" : "none";
     }
 
     function goToNextLevel() {
       window.location.href = "level4.html";
     }
   </script>
-
 </body>
 </html>

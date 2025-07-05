@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 4 - Brute Force Password Crack</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Level 4: Brute Force Password Crack</h1>
+        <p>We have a hashed password. Your mission is to figure out which word from the word list matches it.</p>
+
+        <div class="puzzle">
+            <strong>Hash:</strong>
+            <p id="targetHash">ea9032b76f1e061c5823c7ecb6e61f50</p> <!-- Correct MD5 of "hey" -->
+
+            <button onclick="toggleWordlist()">Show Wordlist</button>
+            <p id="wordlistText" style="display:none; color: #aaa;">Wordlist: Qwerty1, P@ssw0rd, Indya123, secret, bye, admin, hey</p>
+
+            <button onclick="startBruteForce()">Start Cracking</button>
+            <p><strong>Status:</strong> <span id="statusText">Waiting...</span></p>
+            <p><strong>Matched Password:</strong> <span id="result"></span></p>
+
+            <audio id="successSound" src="../Assets/Sounds/success-fanfare-trumpets.mp3"></audio>
+            <audio id="failSound" src="../Assets/Sounds/wrong-answer.wav"></audio>
+
+            <p id="feedback"></p>
+            <button id="nextLevelBtn" onclick="goToNextLevel()" style="display: none;">Next Level</button>
+        </div>
+
+        <a href="../index.html">Back to Main Menu</a>
+    </div>
+
+ <script>
+    const wordlist = ["Qwerty1", "P@ssw0rd", "Indya123", "secret", "bye", "admin", "hey"];
+
+    function toggleWordlist() {
+      const wordlistText = document.getElementById("wordlistText");
+      wordlistText.style.display = wordlistText.style.display === "none" ? "block" : "none";
+    }
+
+    function startBruteForce() {
+      const targetHash = document.getElementById("targetHash").textContent.trim().toLowerCase();
+      let index = 0;
+      document.getElementById("statusText").textContent = "Starting...";
+
+      const interval = setInterval(() => {
+        if (index < wordlist.length) {
+          const guess = wordlist[index];
+          const guessHash = CryptoJS.MD5(guess.trim()).toString().toLowerCase();
+          document.getElementById("statusText").textContent = `Trying: ${guess}`;
+
+          if (guessHash === targetHash) {
+            document.getElementById("statusText").textContent = "✅ Match Found!";
+            document.getElementById("result").textContent = guess;
+            document.getElementById("successSound").play();
+            document.getElementById("nextLevelBtn").style.display = "inline-block";
+            clearInterval(interval);
+          } else {
+            index++;
+          }
+        } else {
+          document.getElementById("statusText").textContent = "❌ No match found.";
+          document.getElementById("failSound").play();
+          clearInterval(interval);
+        }
+      }, 1000);
+    }
+
+    function goToNextLevel() {
+      window.location.href = "level4.html";
+    }
+  </script>
+
+</body>
+</html>

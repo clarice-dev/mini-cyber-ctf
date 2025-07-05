@@ -46,3 +46,16 @@ ul {
     text-decoration: underline;
   }
   
+  #hintText code {
+  background: #333;
+  padding: 3px 6px;
+  border-radius: 5px;
+  color: #ffeb3b;
+}
+
+.hint-code {
+  background: #333;
+  padding: 3px 6px;
+  border-radius: 5px;
+  color: #ffeb3b;
+}
